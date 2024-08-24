@@ -1,0 +1,12 @@
+version: "3"
+services:
+  db:
+    container_name: db_govinchik
+    image: postgres:16.4-bookworm
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+    ports:
+      - 1111:5432
