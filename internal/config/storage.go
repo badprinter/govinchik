@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 )
 
@@ -15,12 +16,14 @@ var (
 )
 
 type StorageConfig struct {
-	User    string
-	Secret  string
-	IP      string
-	Port    string
-	DB_Name string
-	SSLmode string
+	// TODO driver
+	User             string
+	Secret           string
+	IP               string
+	Port             string
+	DB_Name          string
+	SSLmode          string
+	UrlConnectionStr *string
 }
 
 // TODO переписать, MAP
@@ -32,6 +35,8 @@ func NewStorageConfig() (*StorageConfig, error) {
 		os.Getenv("DB_PORT"),     // PORT
 		os.Getenv("DB_DATABASE"), // DB_Name
 		os.Getenv("DB_SSLMODE"),  // SSL MODE
+
+		new(string), // Заглушка
 	}
 
 	if s.User == "" {
@@ -58,5 +63,18 @@ func NewStorageConfig() (*StorageConfig, error) {
 		return nil, ErrorSSlMode
 	}
 
+	s.UrlConnectionStr = s.GetUrlConnect()
+
 	return s, nil
+}
+
+func (s *StorageConfig) GetUrlConnect() *string {
+	str := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		s.User,
+		s.Secret,
+		s.IP,
+		s.Port,
+		s.DB_Name,
+		s.SSLmode)
+	return &str
 }

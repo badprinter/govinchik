@@ -1,7 +1,0 @@
-db:
-  username: postgres
-  password: secret
-  ip: localhost
-  port: 3000
-  database: govinchik
-  sslmode: disable
