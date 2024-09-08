@@ -8,6 +8,7 @@ import (
 	"os/signal"
 
 	"github.com/badprinter/govinchik/internal/config"
+	"github.com/badprinter/govinchik/internal/storage"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 )
@@ -18,6 +19,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	storage, err := storage.New(cfg)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	storage.Connect()
 
 	fmt.Println(cfg)
 
@@ -39,7 +47,7 @@ func main() {
 func handler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println("RECOVER: %v\n", err)
+			fmt.Printf("RECOVER: %v\n", err)
 		}
 	}()
 	b.SendMessage(ctx, &bot.SendMessageParams{
