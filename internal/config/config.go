@@ -1,31 +1,31 @@
 package config
 
+import "log"
+
+// Глобальная переменна которая содежрит в себе все нужные параметры.
+var Cfg *Config = NewConfig()
+
 type Config struct {
 	Storage  *StorageConfig
 	Telegram *TelegramConfig
 }
 
-func NewConfig() (*Config, error) {
+func NewConfig() *Config {
 
 	// Storage
 	storage, err := NewStorageConfig()
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
 
 	// Telegram bot api
 	telegram, err := NewTelegramConfig()
 	if err != nil {
-		return nil, err
+		log.Fatalln(err)
 	}
 
 	return &Config{
 		storage,
 		telegram,
-	}, nil
-}
-
-func (c *Config) String() string {
-	return "Telegram tokent: " + c.Telegram.Token +
-		"\nIP_Database: " + c.Storage.IP
+	}
 }
