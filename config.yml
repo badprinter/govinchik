@@ -1,0 +1,8 @@
+db:
+  ip: "localhost"
+  port: "9000"
+  user:  "govinchik"
+  secret: "govinchik"
+  sslmode: "disable"
+telegram:
+  api: "12345676778"

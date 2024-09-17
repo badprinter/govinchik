@@ -5,13 +5,12 @@ import (
 	"github.com/badprinter/govinchik/internal/mylogger"
 	"github.com/badprinter/govinchik/internal/storage"
 	"github.com/badprinter/govinchik/internal/telegram"
-	"log"
-	"os"
 )
 
 var (
-	mylog *mylogger.MyLogger = mylogger.NewMyLogger()
-	cfg   *config.Config     = config.NewConfig()
+	mylog *mylogger.MyLogger      = mylogger.NewMyLogger()
+	cfg   *config.Config          = config.NewConfig()
+	store *storage.StorageManager = storage.NewStorageManager()
 )
 
 type App struct {
@@ -19,9 +18,7 @@ type App struct {
 }
 
 func New() *App {
-	logger := log.New(os.Stdout, "govinchik", log.LstdFlags|log.Lshortfile)
 	cfg := config.NewConfig()
-	store := storage.NewStorageManager(cfg)
 	telegram := telegram.NewTelegram(&cfg.Telegram.Token)
 	return &App{
 		telegram,
@@ -29,5 +26,6 @@ func New() *App {
 }
 
 func (a *App) Start() {
+	defer store.Close()
 	a.telegram.Start()
 }

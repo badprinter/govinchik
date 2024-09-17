@@ -1,8 +1,10 @@
 package storage
 
 import (
+	"context"
 	"github.com/badprinter/govinchik/internal/config"
 	"github.com/badprinter/govinchik/internal/mylogger"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 // storage - пакет, реализует работу с базой данных.
@@ -24,10 +26,24 @@ var (
 // В ней определенны вспомогательные структуры которые реализует
 // какой-либо аспект или абстракцию с базой данной.
 type StorageManager struct {
-	userController *UserController
+	pool              *pgxpool.Pool
+	userController    *UserController
+	accountController *AccountController
 }
 
 func NewStorageManager() *StorageManager {
-	return &StorageManager{}
+	pool, err := pgxpool.New(context.Background(), *cfg.UrlConnectionStr)
+	if err != nil {
+		mylog.FATAL("Не удалось подключиться к базе данных")
+	}
+	return &StorageManager{
+		pool:              pool,
+		userController:    &UserController{pool: pool},
+		accountController: &AccountController{pool: pool},
+	}
 
+}
+
+func (sm *StorageManager) Close() {
+	sm.pool.Close()
 }
